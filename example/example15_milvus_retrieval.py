@@ -19,7 +19,8 @@ from pymilvus import connections, MilvusClient
 MILVUS_URI = "http://localhost:19530"
 MILVUS_TOKEN = "root:Milvus"
 COLLECTION_NAME = "retrieval_demo"
-EMBEDDING_MODEL = "/Users/jiang/models/embedding_models/bge-small-zh-v1.5"
+EMBEDDING_MODEL = "D:\\BIGMODEL"
+
 
 # 预连接 MilvusClient 并注册到全局 connections
 client = MilvusClient(uri=MILVUS_URI, token=MILVUS_TOKEN)

@@ -32,9 +32,9 @@ PG_CONNECTION = {
     "dbname": "rag",
 }
 
-EMBEDDING_MODEL = "/Users/jiang/models/embedding_models/bge-small-zh-v1.5"
-RERANK_MODEL = "/Users/jiang/models/rerank_models/bge-reranker-v2-m3"
-EMBEDDING_DIM = 512
+EMBEDDING_MODEL = "D:\\BIGMODEL"
+RERANK_MODEL = "D:\\huggingface\\hub\\models--BAAI--bge-reranker-v2-m3\\snapshots\\953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e"
+EMBEDDING_DIM = 1024
 
 # ==================== 1. 连接数据库 ====================
 
@@ -48,11 +48,15 @@ def init_db():
     cur = conn.cursor()
 
     # 创建表（包含 text 和 vector 字段）
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS documents (
+    # 先删表：CREATE TABLE IF NOT EXISTS 不会修改已存在表的列类型，
+    # 若旧表仍是 VECTOR(512)，插入 1024 维向量会报维度不匹配
+    cur.execute("DROP TABLE IF EXISTS documents;")
+
+    cur.execute(f"""
+        CREATE TABLE documents (
             id SERIAL PRIMARY KEY,
             text TEXT NOT NULL,
-            vector VECTOR(512)
+            vector VECTOR({EMBEDDING_DIM})
         );
     """)
     conn.commit()

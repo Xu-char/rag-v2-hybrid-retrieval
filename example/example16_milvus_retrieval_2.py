@@ -10,8 +10,8 @@ from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 MILVUS_URI = "http://localhost:19530"
 MILVUS_TOKEN = "root:Milvus"
 COLLECTION_NAME = "banking_rag_hybrid"
-EMBEDDING_MODEL_PATH = "/Users/jiang/models/embedding_models/bge-small-zh-v1.5"
-EMBEDDING_DIM = 512
+EMBEDDING_MODEL_PATH = "D:\\BIGMODEL"
+EMBEDDING_DIM = 1024
 
 # 20 条金融银行相关问答数据
 TEST_DATA = [
