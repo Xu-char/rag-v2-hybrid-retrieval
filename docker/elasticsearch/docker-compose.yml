@@ -1,0 +1,39 @@
+# 单节点 Elasticsearch 8.15.0 + IK 分词器（和 Dockerfile 放在同一个目录）
+#   docker compose up -d --build      # 启动（首次会拉镜像 + 装 IK）
+#   docker compose ps / logs -f       # 状态、日志
+#   docker compose down               # 停止（保留数据卷）
+#   docker compose down -v            # 停止并删数据
+# 浏览器验证：http://localhost:9200
+#
+# name 固定成 ragv2：容器最初就是用这个项目名创建的，
+# 换目录后仍能管到同一个容器和数据卷 ragv2_es_data。
+name: ragv2
+
+services:
+  elasticsearch:
+    build:
+      context: .
+    image: ragv2/elasticsearch-ik:8.15.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      # 本地开发关掉安全认证，浏览器/客户端直接 http 访问
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"   # HTTP API
+      # 单节点不需要 9300 集群端口，多节点时再放开
+      # - "9300:9300"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 40s
+    restart: unless-stopped
+
+volumes:
+  es_data:

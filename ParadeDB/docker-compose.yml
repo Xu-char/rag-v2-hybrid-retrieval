@@ -1,0 +1,42 @@
+# ParadeDB（PostgreSQL 17 + pgvector 向量检索 + pg_search BM25 全文检索）
+#
+# 用法（在本目录下打开终端）：
+#   docker compose up -d          # 启动
+#   docker compose ps             # 状态
+#   docker compose logs -f paradedb
+#   docker compose down           # 停止（数据保留在 paradedb_data 卷里）
+#   docker compose down -v        # 停止并删数据
+#
+# 连进去（宿主机上没装 psql，用容器里的）：
+#   docker exec -it paradedb psql -U postgres -d rag
+#
+# 应用连接串：
+#   postgresql://postgres:postgres123@localhost:5432/rag
+#
+# 注意：官方镜像 tag 带 v 前缀，写 0.22.6-pg17 会拉不到（manifest unknown）
+name: paradedb
+
+services:
+  paradedb:
+    image: paradedb/paradedb:v0.22.6-pg17
+    container_name: paradedb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_DB: rag
+    ports:
+      - "5432:5432"
+    volumes:
+      # 显式命名，保持和你原来的 docker run -v paradedb_data:... 一致
+      - paradedb_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d rag"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    restart: unless-stopped
+
+volumes:
+  paradedb_data:
+    name: paradedb_data

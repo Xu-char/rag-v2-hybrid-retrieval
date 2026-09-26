@@ -1,0 +1,28 @@
+# 虚拟环境
+.venv/
+venv/
+
+# Python缓存
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.cache/
+
+# MinerU输出和批处理产物
+data/mineru_output/
+data/mineru_batch/
+data/*.pdf
+
+# 本地 Milvus 持久化数据（etcd / MinIO / Milvus）
+Milvus/volumes/
+
+# 日志
+*.log
+
+# vscode 临时文件
+.vscode/
+.DS_Store
